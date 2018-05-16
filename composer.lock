@@ -1,0 +1,52 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "d115e2d7ac52b66f663a102613d5fc40",
+    "packages": [
+        {
+            "name": "bcit-ci/codeigniter",
+            "version": "3.1.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bcit-ci/CodeIgniter.git",
+                "reference": "71e647782764184e3aab4faffe6d99176758979f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bcit-ci/CodeIgniter/zipball/71e647782764184e3aab4faffe6d99176758979f",
+                "reference": "71e647782764184e3aab4faffe6d99176758979f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.7"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "1.1.*",
+                "phpunit/phpunit": "4.* || 5.*"
+            },
+            "suggest": {
+                "paragonie/random_compat": "Provides better randomness in PHP 5.x"
+            },
+            "type": "project",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "The CodeIgniter framework",
+            "homepage": "https://codeigniter.com",
+            "abandoned": "codeigniter/framework",
+            "time": "2018-03-22T14:48:55+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}
