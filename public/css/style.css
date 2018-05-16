@@ -1,0 +1,10 @@
+.tip{
+    font-style: italic;   
+    font-weight: 300;
+}
+label {
+    font-weight: 600;
+} 
+#submit {
+    margin-top: 3em;
+}
