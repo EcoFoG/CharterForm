@@ -15,24 +15,52 @@ class Admin extends CI_Controller
     
     private function _checkRights()
     {
-        redirect(base_url().'admin/login');
+        if($this->session->userdata['role'] != 'admin'){
+            redirect(base_url().'admin/login');
+        }
     }
     
     public function login()
     {
+        $this->form_validation->set_rules('password', 'Password', 'required');
+
+        if($this->form_validation->run() == FALSE) {
+            $this->load->view('admin/header');
+            $this->load->view('admin/login');
+            $this->load->view('admin/footer');
+        }else{
+            $post = $this->input->post();
+            $clean = $this->security->xss_clean($post);
+
+            $this->load->library('password');
+
+            $valid_password = 'sha256:1000:/F4DPLc91Cz4VMWNBsQMuv5WOEaJMJWv:UXZNMOevWBTWxpqHvFwIH7I07xMuW7xb'; // 6waV7x5D
+
+            echo $this->password->create_hash($post['password']); 
+
+            if(!$this->password->validate_password($post['password'], $valid_password)){
+                error_log('Unsuccessful login attempt('.$post['email'].')');
+                $this->session->set_flashdata('flash_message', 'The login was unsucessful');
+                return false;
+            }
+            $this->session->set_userdata('role', 'admin');
+        
+            redirect(base_url().'admin/');
+        }
         
     }
     
     public function index()
     {
         $this->_checkRights();
+        redirect(base_url().'admin/list_requests');
     }
 
     public function accept_request($id){
         $this->_checkRights();
-        $requestinfo = $this->request_model->getCharterInfo($id);
+        $requestinfo = $this->charter_model->getCharterInfo($id);
         if ($requestinfo) {
-            $this->request_model->acceptCharter($id);
+            $this->charter_model->acceptCharter($id);
             redirect(base_url().'admin/list_requests/');
         } else if (isset($requestinfo->approved)) {
             $this->session->set_flashdata('error_message',"The request n°$id approval is already filled");
@@ -45,9 +73,9 @@ class Admin extends CI_Controller
 
     public function decline_request($id){
         $this->_checkRights();
-        $requestinfo = $this->request_model->getCharterInfo($id);
+        $requestinfo = $this->charter_model->getCharterInfo($id);
         if (($requestinfo) && !isset($requestinfo->approved)) {
-            $this->request_model->declineCharter($id);
+            $this->charter_model->declineCharter($id);
             redirect(base_url().'admin/list_requests/');
         } else if (isset($requestinfo->approved)) {
             $this->session->set_flashdata('error_message',"The request n°$id approval is already filled");
