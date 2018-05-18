@@ -15,10 +15,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			<div class="row justify-content-center">
 				<div class="col-12 justify-content-center">
 					<div class="alert alert-info">Fields with * are required</div>
-					<div class="alert alert-danger">
-						<?php echo validation_errors(); ?>
-					</div>
-					<form method="post">
+					<?php $formErrors = validation_errors();
+					if (isset($formErrors) && !empty($formErrors)) {
+						echo "<div class='alert alert-danger'>";
+						echo $formErrors;
+						echo "</div>";
+					}
+					?>
+					<?php $fattr = array('class' => 'form');
+                     echo form_open(base_url(), $fattr); ?>
 					<?php
 						foreach ($form_array as $name => $value) {
 							$required = '';
@@ -36,7 +41,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 									}
 									echo "<label for='$name'>$label$required</label>";
 									echo (!empty($tip)) ? "<div class='tip'>$tip</div>" : null;
-									echo "<textarea class='form-control' value='".set_value($name)."' id='$name'></textarea>";
+									echo "<textarea class='form-control' name='$name' id='$name'>".set_value($name)."</textarea>";
 									echo "</div>";
 									break;
 								case 'checkbox':
@@ -46,7 +51,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 									}
 									echo "<label class='form-check-label' for='$name'>$label$required</label>";
 									echo (!empty($tip)) ? "<div class='tip'>$tip</div>" : null;
-									echo "<input class='form-check-input' value='".set_value($name)."' type='$type' id='$name'>";
+									echo "<input class='form-check-input' type='$type' name='$name' id='$name'>";
 									echo "</div>";
 									break;
 								default:
@@ -56,14 +61,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 									}
 									echo "<label for='$name'>$label$required</label>";
 									echo (!empty($tip)) ? "<div class='tip'>$tip</div>" : null;
-									echo "<input class='form-control' value='".set_value($name)."' type='$type' id='$name'>";
+									echo "<input class='form-control' value='".set_value($name)."' name='$name' type='$type' id='$name'>";
 									echo "</div>";
 									break;
 							}
 						}
 					?>
 					<input class="btn btn-primary" type="submit" id="submit" value="Submit">
-					</form>
+					<?php echo form_close(); ?>
 				</div>
 			</div>
 		</div>

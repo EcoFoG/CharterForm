@@ -22,23 +22,23 @@ class Main extends CI_Controller {
 			$rules = $value['rules'];
 			$this->form_validation->set_rules($name,$label,$rules);
 		}
+
 		if ($this->form_validation->run() == FALSE) 
 		{
 			$data['form_array'] = $form_array;
 			$this->load->view('index', $data);
 		} else {
             $post = $this->input->post();
-            $clean = $this->security->xss_clean($post);
+			$clean = $this->security->xss_clean($post);
+			$clean['date']= date("Y-M-D H:i");
             $requestId = $this->charter_model->insertCharter($clean);
 			if (!$requestId)
 			{
-                $this->session->set_flashdata('flash_message', 'A problem appeared in your request');
-               //redirect(base_url().'main/login');
+				echo "A problem appeared in your request";
             } else {
-                $requestInfo = $this->request_model->getRequestInfo($requestId);
-                print_r($requestInfo);
                 echo '<br>Your request had been taken, you will be contacted by e-mail when accepted <br>'
-                . '<a href="'. base_url().'/main/">Back to login</a>';
+				. '<a href="http://paracou.cirad.fr">Back to Paracou Gateway</a>';
+				// Mail here
             }
         }
 	}

@@ -25,23 +25,21 @@ class Charter_model extends CI_Model
         return $this->db->insert_id();
     }
 
-    public function approveCharter(Array $d, String $approval)
-    {
-        $d["specific_conditions"] = isset($d["specific_conditions"]) ? $d["specific_conditions"] : null;
-        $string = array(
-            'specific_conditions' => $d['specific_conditions'],
-            'approved' => $approval
-        );
-        $this->db->where('id', $d['id']);
-        $this->db->update('requests', $data);
-        $success = $this->db->affected_rows();
-        if (!$success) {
-            error_log('Unable to approveCharter('.$d['id'].')');
-            return false;
-        }
-        $request_info = $this->getRequestInfo($d['id']);
-        return $request_info;
-    }
+    public function acceptCharter($id){
+        $data = array(
+               'approved' => date('Y/m/d')
+            );
+        $this->db->where('id', $id);
+        $this->db->update('charter', $data);
+      }
+  
+      public function declineCharter($id){
+        $data = array(
+               'approved' => "Declined"
+            );
+        $this->db->where('id', $id);
+        $this->db->update('charter', $data);
+      }
 
     public function getCharterInfo($id)
     {
@@ -57,7 +55,7 @@ class Charter_model extends CI_Model
 
     public function getCharterList()
     {
-        $q = $this->db->get('requests');
+        $q = $this->db->get('charter');
         return $q->result();
     }
 }
