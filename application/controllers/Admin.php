@@ -1,7 +1,7 @@
 <?php
 class Admin extends CI_Controller
 {
-    public function __construct() 
+    public function __construct()
 	{
 		parent::__construct();
 		$this->load->model('Charter_model', 'charter_model', TRUE);
@@ -12,14 +12,14 @@ class Admin extends CI_Controller
         $this->load->model('Charter_model', 'charter_model');
         $this->load->library('session');
     }
-    
+
     private function _checkRights()
     {
         if($this->session->userdata['role'] != 'admin'){
             redirect(base_url().'admin/login');
         }
     }
-    
+
     public function login()
     {
         $this->form_validation->set_rules('password', 'Password', 'required');
@@ -36,20 +36,21 @@ class Admin extends CI_Controller
 
             $valid_password = 'sha256:1000:/F4DPLc91Cz4VMWNBsQMuv5WOEaJMJWv:UXZNMOevWBTWxpqHvFwIH7I07xMuW7xb'; // 6waV7x5D
 
-            echo $this->password->create_hash($post['password']); 
+            $this->password->create_hash($post['password']);
 
             if(!$this->password->validate_password($post['password'], $valid_password)){
-                error_log('Unsuccessful login attempt('.$post['email'].')');
+                error_log('Unsuccessful login attempt()');
                 $this->session->set_flashdata('flash_message', 'The login was unsucessful');
+                redirect(base_url().'admin/login');
                 return false;
             }
             $this->session->set_userdata('role', 'admin');
-        
+
             redirect(base_url().'admin/');
         }
-        
+
     }
-    
+
     public function index()
     {
         $this->_checkRights();
