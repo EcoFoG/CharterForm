@@ -1,7 +1,7 @@
 <?php
 class Admin extends CI_Controller
 {
-    public function __construct() 
+    public function __construct()
 	{
 		parent::__construct();
 		$this->load->model('Charter_model', 'charter_model', TRUE);
@@ -12,14 +12,14 @@ class Admin extends CI_Controller
         $this->load->model('Charter_model', 'charter_model');
         $this->load->library('session');
     }
-    
+
     private function _checkRights()
     {
         if($this->session->userdata['role'] != 'admin'){
             redirect(base_url().'admin/login');
         }
     }
-    
+
     public function login()
     {
         $this->form_validation->set_rules('password', 'Password', 'required');
@@ -34,22 +34,22 @@ class Admin extends CI_Controller
 
             $this->load->library('password');
 
-            $valid_password = 'sha256:1000:/F4DPLc91Cz4VMWNBsQMuv5WOEaJMJWv:UXZNMOevWBTWxpqHvFwIH7I07xMuW7xb'; // 6waV7x5D
+            $valid_password = 'sha256:1000:/F4DPLc91Cz4VMWNBsQMuv5WOEaJMJWv:UXZNMOevWBTWxpqHvFwIH7I07xMuW7xb';
 
-            echo $this->password->create_hash($post['password']); 
+            $this->password->create_hash($post['password']);
 
             if(!$this->password->validate_password($post['password'], $valid_password)){
-                error_log('Unsuccessful login attempt('.$post['email'].')');
+                error_log('Unsuccessful login attempt()');
                 $this->session->set_flashdata('flash_message', 'The login was unsucessful');
                 return false;
             }
             $this->session->set_userdata('role', 'admin');
-        
+
             redirect(base_url().'admin/');
         }
-        
+
     }
-    
+
     public function index()
     {
         $this->_checkRights();
@@ -61,6 +61,7 @@ class Admin extends CI_Controller
         $requestinfo = $this->charter_model->getCharterInfo($id);
         if ($requestinfo) {
             $this->charter_model->acceptCharter($id);
+            $this->_acceptMail($requestinfo);
             redirect(base_url().'admin/list_requests/');
         } else if (isset($requestinfo->approved)) {
             $this->session->set_flashdata('error_message',"The request n°$id approval is already filled");
@@ -91,7 +92,7 @@ class Admin extends CI_Controller
         $this->load->config('forms');
         $form_array = $this->config->item('admin_charter_form');
         $requestinfo = (array)$this->charter_model->getCharterInfo($id);
-        $form_info = array_merge_recursive($form_array,$requestinfo);
+        $form_info = array_merge_recursive($form_array, $requestinfo);
         $data["id"] = $id;
         if ($requestinfo) {
             $data['form_info'] = $form_info;
@@ -121,4 +122,30 @@ class Admin extends CI_Controller
         $this->load->view('admin/list_requests', $data);
         $this->load->view('admin/footer');
     }
+
+    private function _acceptMail($requestInfo){
+
+        $this->load->library('email');
+        $this->load->config('email');
+        $email_config = $this->config->item('email');
+		$this->email->initialize($email_config);
+		
+		$this->email->from("noreply@paracoucharter.cirad.fr", 'Paracou Charter');
+        $this->email->to($requestInfo->email);
+        $this->email->subject('Request taken');
+        $this->email->message("Dear $requestInfo->name_principal_investigator,<br>
+        Your request to access the Paracou research station data has been accepted. You may now visualize and extract the data you need for your scientific project.<br>
+        We remind you that these data are solely usable for the study for which you have requested access. Please do not communicate these data to anyone for any other use. For any other scientific study, please make a new data request on our website https://paracoudata.cirad.fr/main/login/.<br>
+        If your work on these data leads to a public communication (scientific paper, communication, report…), please cite the source as 'Paracou Research Station, a large scale forest disturbance experiment in Amazonia from 1982, Cirad, https://paracou.cirad.fr/'<br>
+        You can find the metadata here and geographic data here.<br>
+        The Paracou team <br>
+        https://paracou.cirad.fr
+        ");
+        
+        $r = $this->email->send();
+        $this->email->clear();
+        if(!$r){
+            log_message('error', $this->email->print_debugger());
+        }
+	}
 }

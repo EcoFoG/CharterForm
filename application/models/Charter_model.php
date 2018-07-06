@@ -18,7 +18,8 @@ class Charter_model extends CI_Model
             'non_disclosure' => $d['non_disclosure'],
             'date' => $d['date'],
             'name_principal_investigator' => $d['name_principal_investigator'],
-            'condition_use_approve' => $d['condition_use_approve']
+            'condition_use_approve' => $d['condition_use_approve'],
+            'email' => $d['email']
         );
         $q = $this->db->insert_string('charter', $string);
         $this->db->query($q);

@@ -63,7 +63,7 @@ $config['charter_form'] = array(
 				),
 				'condition_use_approve' => array(
 					'type' => 'checkbox',
-					'label' => 'I have read and accept the charter conditions',
+					'label' => 'I have read and accept the <a href="public/pdf/research_rules.pdf.pdf">research rules</a> and the <a href="public/pdf/safety_rules.pdf">safety rules</a>',
 					'rules' => 'required',
 					'tip' => ''
 				)
