@@ -58,10 +58,11 @@ class Admin extends CI_Controller
 
     public function accept_request($id){
         $this->_checkRights();
+        $specific_conditions = $this->input->post("specific_conditions");
         $requestinfo = $this->charter_model->getCharterInfo($id);
         if ($requestinfo) {
             $this->charter_model->acceptCharter($id);
-            $this->_acceptMail($requestinfo);
+            $this->_acceptMail($requestinfo, $specific_conditions);
             redirect(base_url().'admin/list_requests/');
         } else if (isset($requestinfo->approved)) {
             $this->session->set_flashdata('error_message',"The request n°$id approval is already filled");
@@ -123,23 +124,24 @@ class Admin extends CI_Controller
         $this->load->view('admin/footer');
     }
 
-    private function _acceptMail($requestInfo){
+    private function _acceptMail($requestInfo, $specific_conditions){
 
         $this->load->library('email');
         $this->load->config('email');
         $email_config = $this->config->item('email');
+        $confirm_email_title = $this->config->item('confirm_email_title');
+        $confirm_email_part1 = $this->config->item('confirm_email_part1');
+        $confirm_email_part2 = $this->config->item('confirm_email_part2');
 		$this->email->initialize($email_config);
 		
-		$this->email->from("noreply@paracoucharter.cirad.fr", 'Paracou Charter');
+		$this->email->from("noreply@paracou.cirad.fr", 'Paracou Form');
         $this->email->to($requestInfo->email);
-        $this->email->subject('Request taken');
+        $this->email->subject($confirm_email_title);
         $this->email->message("Dear $requestInfo->name_principal_investigator,<br>
-        Your request to access the Paracou research station data has been accepted. You may now visualize and extract the data you need for your scientific project.<br>
-        We remind you that these data are solely usable for the study for which you have requested access. Please do not communicate these data to anyone for any other use. For any other scientific study, please make a new data request on our website https://paracoudata.cirad.fr/main/login/.<br>
-        If your work on these data leads to a public communication (scientific paper, communication, report…), please cite the source as 'Paracou Research Station, a large scale forest disturbance experiment in Amazonia from 1982, Cirad, https://paracou.cirad.fr/'<br>
-        You can find the metadata here and geographic data here.<br>
-        The Paracou team <br>
-        https://paracou.cirad.fr
+        
+        $confirm_email_part1
+        $specific_conditions 
+        $confirm_email_part2        
         ");
         
         $r = $this->email->send();

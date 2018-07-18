@@ -3,7 +3,7 @@
         <div class="col-8 justify-content-center">
             <?php
                 $fattr = array('id' => 'showrequest');
-                echo form_open("",$fattr); ?>
+                echo form_open(base_url()."admin/accept_request/$id",$fattr); ?>
             <?php
                 foreach ($form_info as $name => $value) {
                     $type = (isset($value['type']) && !empty($value['type'])) ? $value['type'] : null;
@@ -26,12 +26,16 @@
                     }
                 }
             ?>
+            <div class='form-group'>
+            <label for='specific_conditions'>Specific Conditions</label>
+            <textarea class='form-control' name='specific_conditions' id='specific_conditions'></textarea>
+            </div>
         <?php
             if (!isset($requestinfo->accepted)) {
-                echo "<a class=\"btn btn-success\" href= \"".base_url()."admin/accept_request/$id\">Accept request <i class=\"fas fa-check\"></i></a> ";
+                echo form_submit(array('name'=>'accept','value'=>'Accept request',"class"=>"btn btn-success"));
                 echo "<a class=\"btn btn-danger\" href= \"".base_url()."admin/decline_request/$id\" data-confirm=\"Are you sure you want to decline this request ?\">Decline request  <i class=\"fas fa-times\"></i></a> ";
             }
-            echo form_submit(array('name'=>'apply','value'=>'Apply changes',"class"=>"btn btn-primary"));
+            
         ?>
             <a class="btn btn-secondary" href=<?php echo "\"".base_url()."admin/list_requests\"";?>>Back</a>
             <?php echo form_close(); ?>
