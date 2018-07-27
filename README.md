@@ -116,6 +116,6 @@ Je modifie la base de données :
 Je me connecte grace à PUTTY via SSH sur le serveur CIRAD (voir MDP.7z pour les mots de passes)
 ```
 [root@gannat ~]# mysql -u root -p
-MariaDB [(none)]> USE users
+MariaDB [(none)]> USE charter_form
 MariaDB [users]> ALTER TABLE charter ADD COLUMN age INT(15);
 ```
