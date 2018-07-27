@@ -73,7 +73,7 @@ class Main extends CI_Controller {
 		} else {
             $post = $this->input->post();
 			$clean = $this->security->xss_clean($post);
-			$clean['date']= date("Y-M-d H:i");
+			$clean['date']= date("Y-m-d H:i");
             $requestId = $this->charter_model->insertCharter($clean);
 			if (!$requestId)
 			{

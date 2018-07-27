@@ -41,6 +41,7 @@ class Admin extends CI_Controller
             if(!$this->password->validate_password($post['password'], $valid_password)){
                 error_log('Unsuccessful login attempt()');
                 $this->session->set_flashdata('flash_message', 'The login was unsucessful');
+                redirect(base_url().'admin/login');
                 return false;
             }
             $this->session->set_userdata('role', 'admin');
